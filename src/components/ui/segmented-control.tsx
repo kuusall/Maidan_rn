@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 
-import { Colors, Radii, Spacing } from '@/constants/theme';
+import { Radii, Spacing, useAppTheme } from '@/constants/theme';
 import { Text } from '@/components/ui/text';
 
 export type SegmentOption<T extends string> = {
@@ -21,8 +21,9 @@ export function SegmentedControl<T extends string>({
   onChange,
   accessibilityLabel,
 }: SegmentedControlProps<T>) {
+  const { colors } = useAppTheme();
   return (
-    <View accessibilityLabel={accessibilityLabel} accessibilityRole="tablist" style={styles.container}>
+    <View accessibilityLabel={accessibilityLabel} accessibilityRole="tablist" style={[styles.container, { backgroundColor: colors.glass, borderColor: colors.glassBorder }]}>
       {options.map((option) => {
         const selected = option.value === value;
 
@@ -32,7 +33,7 @@ export function SegmentedControl<T extends string>({
             accessibilityState={{ selected }}
             key={option.value}
             onPress={() => onChange(option.value)}
-            style={({ pressed }) => [styles.option, selected && styles.selected, pressed && styles.pressed]}>
+            style={({ pressed }) => [styles.option, selected && { backgroundColor: colors.primary }, pressed && styles.pressed]}>
             <Text variant="data" tone={selected ? 'default' : 'muted'} uppercase>
               {option.label}
             </Text>
@@ -45,8 +46,6 @@ export function SegmentedControl<T extends string>({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.dark.glass,
-    borderColor: Colors.dark.glassBorder,
     borderRadius: Radii.pill,
     borderWidth: 1,
     flexDirection: 'row',
@@ -63,8 +62,5 @@ const styles = StyleSheet.create({
   },
   pressed: {
     opacity: 0.8,
-  },
-  selected: {
-    backgroundColor: Colors.dark.primary,
   },
 });

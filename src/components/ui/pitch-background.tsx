@@ -1,6 +1,6 @@
 import { StyleSheet, View, type ViewProps } from 'react-native';
 
-import { Colors } from '@/constants/theme';
+import { useAppTheme } from '@/constants/theme';
 
 export type PitchBackgroundProps = ViewProps & {
   lineSpacing?: number;
@@ -14,10 +14,11 @@ export function PitchBackground({
   style,
   ...props
 }: PitchBackgroundProps) {
+  const { colors } = useAppTheme();
   const lineCount = Math.ceil(420 / lineSpacing);
 
   return (
-    <View {...props} style={[styles.container, style]}>
+    <View {...props} style={[styles.container, { backgroundColor: colors.pageBackground }, style]}>
       <View pointerEvents="none" style={StyleSheet.absoluteFill}>
         {Array.from({ length: lineCount }, (_, index) => (
           <View
@@ -39,7 +40,6 @@ export function PitchBackground({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.dark.pageBackground,
     flex: 1,
     overflow: 'hidden',
   },

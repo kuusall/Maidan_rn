@@ -1,34 +1,44 @@
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
-import { Colors } from '@/constants/theme';
+import { AppThemeProvider, useAppTheme } from '@/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
 
-const navigationTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: Colors.dark.pageBackground,
-    card: Colors.dark.surface,
-    border: Colors.dark.glassBorder,
-    text: Colors.dark.text,
-    primary: Colors.dark.primary,
-  },
-};
-
 export default function RootLayout() {
+  return (
+    <AppThemeProvider>
+      <ThemedNavigation />
+    </AppThemeProvider>
+  );
+}
+
+function ThemedNavigation() {
+  const { colors } = useAppTheme();
+  const navigationTheme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      background: colors.pageBackground,
+      card: colors.surface,
+      border: colors.glassBorder,
+      text: colors.text,
+      primary: colors.primary,
+    },
+  };
+
   return (
     <ThemeProvider value={navigationTheme}>
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: Colors.dark.pageBackground },
+          contentStyle: { backgroundColor: colors.pageBackground },
         }}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="screen-drawer" options={{ presentation: 'modal' }} />
         <Stack.Screen name="notification" />
         <Stack.Screen name="wallet" />
+        <Stack.Screen name="create-team" />
         <Stack.Screen name="team-detail" />
         <Stack.Screen name="team-chat" />
         <Stack.Screen name="booking-ticket" />

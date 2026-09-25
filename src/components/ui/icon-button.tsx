@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, type PressableProps, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, type PressableProps } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { Colors, Radii, Shadows } from '@/constants/theme';
+import { Radii, Shadows, useAppTheme } from '@/constants/theme';
 
 export type IconButtonVariant = 'ghost' | 'filled' | 'primary';
 
@@ -21,6 +21,7 @@ export function IconButton({
   style,
   ...props
 }: IconButtonProps) {
+  const { colors } = useAppTheme();
   return (
     <Pressable
       {...props}
@@ -31,7 +32,12 @@ export function IconButton({
       hitSlop={8}
       style={({ pressed }) => [
         styles.base,
-        iconButtonVariants[variant],
+        {
+          backgroundColor: variant === 'primary' ? colors.primary : variant === 'filled' ? colors.glassElevated : 'transparent',
+          borderColor: colors.glassBorder,
+          borderWidth: variant === 'ghost' || variant === 'filled' ? 1 : 0,
+          ...(variant === 'primary' ? Shadows.floating : {}),
+        },
         { height: size, width: size },
         disabled && styles.disabled,
         pressed && !disabled && styles.pressed,
@@ -56,13 +62,3 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.96 }],
   },
 });
-
-const iconButtonVariants: Record<IconButtonVariant, ViewStyle> = {
-  ghost: { backgroundColor: 'transparent', borderColor: Colors.dark.glassBorder, borderWidth: 1 },
-  filled: {
-    backgroundColor: Colors.dark.glassElevated,
-    borderColor: Colors.dark.glassBorder,
-    borderWidth: 1,
-  },
-  primary: { backgroundColor: Colors.dark.primary, ...Shadows.floating },
-};

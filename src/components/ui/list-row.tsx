@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View, type PressableProps } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { Colors, Spacing } from '@/constants/theme';
+import { Spacing, useAppTheme } from '@/constants/theme';
 import { Text } from '@/components/ui/text';
 
 export type ListRowProps = Omit<PressableProps, 'children'> & {
@@ -21,12 +21,14 @@ export function ListRow({
   style,
   ...props
 }: ListRowProps) {
+  const { colors } = useAppTheme();
   return (
     <Pressable
       {...props}
       accessibilityRole={props.onPress ? 'button' : undefined}
       style={({ pressed }) => [
         styles.container,
+        { backgroundColor: emphasized ? colors.glass : 'transparent', borderBottomColor: colors.glassBorder },
         emphasized && styles.emphasized,
         pressed && props.onPress && styles.pressed,
         typeof style === 'function' ? style({ pressed, hovered: false }) : style,
@@ -44,7 +46,6 @@ export function ListRow({
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    borderBottomColor: Colors.dark.glassBorder,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: Spacing.md,
@@ -56,7 +57,6 @@ const styles = StyleSheet.create({
     gap: Spacing.xs,
   },
   emphasized: {
-    backgroundColor: Colors.dark.glass,
     borderRadius: Spacing.md,
     borderBottomWidth: 0,
     paddingHorizontal: Spacing.md,

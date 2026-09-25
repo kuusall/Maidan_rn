@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import type { ReactNode } from 'react';
 
-import { Colors, Radii, Shadows, Spacing } from '@/constants/theme';
+import { Radii, Shadows, Spacing, useAppTheme } from '@/constants/theme';
 import { Text } from '@/components/ui/text';
 
 export type ButtonVariant = 'primary' | 'ghost' | 'secondary';
@@ -35,6 +35,7 @@ export function Button({
   style,
   ...props
 }: ButtonProps) {
+  const { colors } = useAppTheme();
   const isDisabled = disabled || loading;
 
   return (
@@ -46,14 +47,19 @@ export function Button({
       disabled={isDisabled}
       style={({ pressed }) => [
         styles.base,
-        buttonVariants[variant],
+        {
+          backgroundColor: variant === 'primary' ? colors.primary : variant === 'secondary' ? colors.glassElevated : 'transparent',
+          borderColor: colors.glassBorder,
+          borderWidth: variant === 'ghost' || variant === 'secondary' ? 1 : 0,
+          ...Shadows.floating,
+        },
         buttonSizes[size],
         isDisabled && styles.disabled,
         pressed && !isDisabled && styles.pressed,
         typeof style === 'function' ? style({ pressed, hovered: false }) : style,
       ]}>
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? Colors.dark.primaryInk : Colors.dark.primary} />
+        <ActivityIndicator color={variant === 'primary' ? colors.primaryInk : colors.primary} />
       ) : (
         <View style={styles.content}>
           {leftIcon}
@@ -86,16 +92,6 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.98 }],
   },
 });
-
-const buttonVariants: Record<ButtonVariant, ViewStyle> = {
-  primary: { backgroundColor: Colors.dark.primary, ...Shadows.floating },
-  ghost: { backgroundColor: 'transparent', borderColor: Colors.dark.glassBorder, borderWidth: 1 },
-  secondary: {
-    backgroundColor: Colors.dark.glassElevated,
-    borderColor: Colors.dark.glassBorder,
-    borderWidth: 1,
-  },
-};
 
 const buttonSizes: Record<ButtonSize, ViewStyle> = {
   small: { minHeight: 36, paddingHorizontal: Spacing.md },

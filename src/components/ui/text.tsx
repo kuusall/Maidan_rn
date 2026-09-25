@@ -5,7 +5,7 @@ import {
   type TextProps as NativeTextProps,
 } from 'react-native';
 
-import { Colors, Fonts } from '@/constants/theme';
+import { Fonts, useAppTheme } from '@/constants/theme';
 
 export type TextVariant = 'hero' | 'screenTitle' | 'cardTitle' | 'body' | 'meta' | 'data';
 export type TextTone = 'default' | 'muted' | 'faint' | 'primary' | 'amber' | 'blue' | 'coral';
@@ -23,6 +23,8 @@ export function Text({
   uppercase = false,
   ...props
 }: TextProps) {
+  const { colors } = useAppTheme();
+
   return (
     <NativeText
       accessibilityRole={props.accessibilityRole ?? 'text'}
@@ -30,7 +32,8 @@ export function Text({
       style={[
         styles.base,
         variantStyles[variant],
-        toneStyles[tone],
+        { color: colors.text },
+        toneStyles(tone, colors),
         uppercase && styles.uppercase,
         style,
       ]}
@@ -40,7 +43,6 @@ export function Text({
 
 const styles = StyleSheet.create({
   base: {
-    color: Colors.dark.text,
     fontFamily: Fonts.body,
   },
   uppercase: {
@@ -53,7 +55,7 @@ const variantStyles: Record<TextVariant, TextStyle> = {
   screenTitle: { fontFamily: Fonts.display, fontSize: 17, fontWeight: '700', lineHeight: 18 },
   cardTitle: { fontFamily: Fonts.display, fontSize: 13.5, fontWeight: '600', lineHeight: 17 },
   body: { fontSize: 14, fontWeight: '400', lineHeight: 22 },
-  meta: { color: Colors.dark.textMuted, fontSize: 12, fontWeight: '400', lineHeight: 16 },
+  meta: { fontSize: 12, fontWeight: '400', lineHeight: 16 },
   data: {
     fontFamily: Fonts.data,
     fontSize: 11,
@@ -63,12 +65,13 @@ const variantStyles: Record<TextVariant, TextStyle> = {
   },
 };
 
-const toneStyles: Record<TextTone, TextStyle> = {
-  default: {},
-  muted: { color: Colors.dark.textMuted },
-  faint: { color: Colors.dark.textFaint },
-  primary: { color: Colors.dark.primary },
-  amber: { color: Colors.dark.amber },
-  blue: { color: Colors.dark.blue },
-  coral: { color: Colors.dark.coral },
-};
+const toneStyles = (tone: TextTone, colors: ReturnType<typeof useAppTheme>['colors']): TextStyle => ({
+  color:
+    tone === 'muted' ? colors.textMuted :
+    tone === 'faint' ? colors.textFaint :
+    tone === 'primary' ? colors.primary :
+    tone === 'amber' ? colors.amber :
+    tone === 'blue' ? colors.blue :
+    tone === 'coral' ? colors.coral :
+    colors.text,
+});

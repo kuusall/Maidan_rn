@@ -1,6 +1,6 @@
 import { StyleSheet, View, type ViewProps, type ViewStyle } from 'react-native';
 
-import { Colors, Radii, Shadows, Spacing } from '@/constants/theme';
+import { Radii, Shadows, Spacing, useAppTheme } from '@/constants/theme';
 
 export type CardVariant = 'glass' | 'strong' | 'solid';
 
@@ -10,18 +10,25 @@ export type CardProps = ViewProps & {
 };
 
 export function Card({ variant = 'glass', padded = true, style, ...props }: CardProps) {
+  const { colors } = useAppTheme();
+  const variantStyle: ViewStyle =
+    variant === 'glass'
+      ? { backgroundColor: colors.glass }
+      : variant === 'strong'
+        ? { backgroundColor: colors.glassElevated, ...Shadows.floating }
+        : { backgroundColor: colors.surface };
+
   return (
     <View
       accessibilityRole="summary"
       {...props}
-      style={[styles.base, cardVariants[variant], padded && styles.padded, style]}
+      style={[styles.base, { borderColor: colors.glassBorder }, variantStyle, padded && styles.padded, style]}
     />
   );
 }
 
 const styles = StyleSheet.create({
   base: {
-    borderColor: Colors.dark.glassBorder,
     borderRadius: Radii.lg,
     borderWidth: 1,
   },
@@ -29,9 +36,3 @@ const styles = StyleSheet.create({
     padding: Spacing.lg,
   },
 });
-
-const cardVariants: Record<CardVariant, ViewStyle> = {
-  glass: { backgroundColor: Colors.dark.glass },
-  strong: { backgroundColor: Colors.dark.glassElevated, ...Shadows.floating },
-  solid: { backgroundColor: Colors.dark.surface },
-};

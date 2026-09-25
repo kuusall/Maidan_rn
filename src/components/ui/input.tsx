@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
 
-import { Colors, Fonts, Radii, Spacing } from '@/constants/theme';
+import { Fonts, Radii, Spacing, useAppTheme } from '@/constants/theme';
 import { Text } from '@/components/ui/text';
 
 export type InputProps = TextInputProps & {
@@ -21,6 +21,7 @@ export function Input({
   style,
   ...props
 }: InputProps) {
+  const { colors } = useAppTheme();
   const labelText = accessibilityLabel ?? label ?? props.placeholder;
 
   return (
@@ -30,14 +31,19 @@ export function Input({
           {label}
         </Text>
       )}
-      <View style={[styles.field, shape === 'pill' && styles.pill, error && styles.fieldError]}>
+      <View
+        style={[
+          styles.field,
+          { backgroundColor: colors.glass, borderColor: error ? colors.coral : colors.glassBorder },
+          shape === 'pill' && styles.pill,
+        ]}>
         {leading}
         <TextInput
           {...props}
           accessibilityLabel={labelText}
           accessibilityHint={error}
-          placeholderTextColor={Colors.dark.textFaint}
-          style={[styles.input, style]}
+          placeholderTextColor={colors.textFaint}
+          style={[styles.input, { color: colors.text }, style]}
         />
         {trailing}
       </View>
@@ -56,8 +62,6 @@ const styles = StyleSheet.create({
   },
   field: {
     alignItems: 'center',
-    backgroundColor: Colors.dark.glass,
-    borderColor: Colors.dark.glassBorder,
     borderRadius: Radii.md,
     borderWidth: 1,
     flexDirection: 'row',
@@ -66,7 +70,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
   },
   fieldError: {
-    borderColor: Colors.dark.coral,
   },
   pill: {
     borderRadius: Radii.pill,
@@ -74,7 +77,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.lg,
   },
   input: {
-    color: Colors.dark.text,
     flex: 1,
     fontFamily: Fonts.body,
     fontSize: 14,
