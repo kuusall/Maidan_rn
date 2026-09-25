@@ -41,3 +41,8 @@ example
 # generated native folders
 /ios
 /android
+
+# local agent/docs notes
+AGENTS.md
+CLAUDE.md
+DESIGN_ANALYSIS.md
