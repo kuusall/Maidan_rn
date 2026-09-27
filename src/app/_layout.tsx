@@ -1,11 +1,16 @@
 import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 
 import { AppThemeProvider, useAppTheme } from '@/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, []);
+
   return (
     <AppThemeProvider>
       <ThemedNavigation />
@@ -42,6 +47,13 @@ function ThemedNavigation() {
         <Stack.Screen name="team-detail" />
         <Stack.Screen name="team-chat" />
         <Stack.Screen name="booking-ticket" />
+        <Stack.Screen name="book-a-ground" />
+        <Stack.Screen name="booking-history" />
+        <Stack.Screen name="find-match-challenges" />
+        <Stack.Screen name="find-match-recruitment" />
+        <Stack.Screen name="my-team" />
+        <Stack.Screen name="post" />
+        <Stack.Screen name="screen1" />
       </Stack>
     </ThemeProvider>
   );
